@@ -1,20 +1,26 @@
 ﻿import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import MealItem from "../components/mealItem";
 import MealList from "../components/MealList";
-import { CATEGORIES, MEALS } from "../data/dummy-data";
+import { CATEGORIES } from "../data/dummy-data";
+import { useSelector } from "react-redux";
 
 const CategoryMealScreen = (props) => {
   const catId = props.navigation.getParam("categoryId");
-
-  const displayedMeals = MEALS.filter(
+  const availableMeals = useSelector((state) => state.meals.filteredMeals);
+  const displayedMeals = availableMeals.filter(
     (meal) => meal.categoryIds.indexOf(catId) >= 0
   );
 
-  
+  if (displayedMeals.length === 0) {
+    return (
+      <View style={styles.content}>
+        <Text>No meals found!</Text>
+      </View>
+    );
+  }
 
   return (
-  <MealList displayedMeals={displayedMeals} navigation={props.navigation}/>
+    <MealList displayedMeals={displayedMeals} navigation={props.navigation} />
   );
 };
 
@@ -34,6 +40,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 15,
+  },
+  content: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
